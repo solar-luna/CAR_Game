@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+  <title>3D 赛车小游戏 Demo</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div id="hud">
+    <div class="stat"><span>速度</span><strong id="speed">0</strong><span class="unit">km/h</span></div>
+    <div class="stat"><span>分数</span><strong id="score">0</strong></div>
+    <div id="nitro" class="bar" aria-label="氮气">
+      <span class="label">氮气</span>
+      <div class="track"><div class="fill" id="nitroFill" style="width:0%"></div></div>
+    </div>
+    <div class="stat"><span>倒计时</span><strong id="timer">120</strong><span class="unit">s</span></div>
+    <div class="stat best"><span>最佳</span><strong id="best">0</strong></div>
+    <button id="pauseBtn" class="hud-btn" aria-label="暂停/继续">⏯</button>
+    <button id="restartBtn" class="hud-btn" aria-label="重新开始">⟲</button>
+    <button id="lightBtn" class="hud-btn" aria-label="切换光照">☀️</button>
+    <button id="muteBtn" aria-label="切换静音">🔊</button>
+  </div>
+
+  <div id="overlay" class="show" onclick="document.getElementById('startBtn').click();">
+    <div class="panel">
+      <h1>3D 赛车小游戏</h1>
+      <p>键盘：W/S 或 ↑/↓ 加速/减速；A/D 或 ←/→ 转向；空格 氮气；P 暂停；R 重新开始</p>
+      <p>赛道会出现道具（补氮 / 加分），同时有 AI 车辆在车流中前进，请注意避让与超车。</p>
+      <button id="startBtn">开始游戏</button>
+      <p class="tip">建议使用桌面浏览器，直接双击本页面即可运行</p>
+    </div>
+  </div>
+
+  <!-- 结算面板 -->
+  <div id="endOverlay" class="overlay hidden">
+    <div class="panel">
+      <h2>本局结束</h2>
+      <p>用时：<strong id="finalTime">120</strong>s</p>
+      <p>分数：<strong id="finalScore">0</strong></p>
+      <p>最佳：<strong id="finalBest">0</strong></p>
+      <button id="againBtn">再来一局</button>
+    </div>
+  </div>
+
+  <div id="mobileHint">在屏幕左/右侧触摸转向，上/下侧加减速</div>
+  <div id="countdown" class="hidden"></div>
+
+  <!-- Three.js 来自 CDN（脚本标签不受 CORS 限制） -->
+  <script src="https://unpkg.com/three@0.160.0/build/three.min.js" onerror="alert('Three.js 加载失败，请检查网络或稍后重试');"></script>
+  <!-- 轻量后处理（FXAA 抗锯齿等），可选失败则自动降级到普通渲染 -->
+  <script src="https://unpkg.com/postprocessing@6.35.3/build/postprocessing.min.js" defer></script>
+  <script src="data.js" defer></script>
+  <script src="game.js" defer></script>
+</body>
+</html>

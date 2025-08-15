@@ -1,0 +1,163 @@
+* { box-sizing: border-box; }
+html, body { height: 100%; }
+body {
+  margin: 0;
+  overflow: hidden;
+  background: linear-gradient(180deg, #1b2340 0%, #0e1227 70%);
+  color: #fff;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+}
+canvas { display: block; }
+
+#hud {
+  position: fixed;
+  top: 12px; left: 12px; right: 12px;
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  z-index: 5;
+  pointer-events: none;
+}
+#hud .stat {
+  background: rgba(0,0,0,0.35);
+  border: 1px solid rgba(255,255,255,0.12);
+  backdrop-filter: blur(6px);
+  border-radius: 10px;
+  padding: 8px 12px;
+  pointer-events: auto;
+}
+#hud .stat span { opacity: 0.8; font-size: 12px; margin: 0 4px; }
+#hud .stat strong { font-size: 20px; margin: 0 2px; }
+#hud .stat.best strong { color: #ffd54f; }
+#muteBtn {
+  margin-left: auto;
+  pointer-events: auto;
+  background: rgba(0,0,0,0.35);
+  color: #fff;
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 10px;
+  padding: 8px 12px;
+  cursor: pointer;
+}
+#muteBtn:hover { background: rgba(255,255,255,0.1); }
+
+.hud-btn {
+  pointer-events: auto;
+  background: rgba(0,0,0,0.35);
+  color: #fff;
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 10px;
+  padding: 8px 10px;
+  cursor: pointer;
+}
+.hud-btn:hover { background: rgba(255,255,255,0.1); }
+
+/* 氮气条 */
+#nitro {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(0,0,0,0.35);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 10px;
+  padding: 8px 10px;
+  pointer-events: auto;
+}
+#nitro .label { font-size: 12px; opacity: 0.8; }
+#nitro .track {
+  width: min(30vw, 220px);
+  height: 8px;
+  background: rgba(255,255,255,0.15);
+  border-radius: 6px;
+  overflow: hidden;
+}
+#nitro .fill {
+  height: 100%;
+  background: linear-gradient(90deg, #00ffd5, #00a2ff);
+  width: 0%;
+}
+
+#overlay {
+  position: fixed;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  background: radial-gradient(ellipse at center, rgba(0,0,0,0.55), rgba(0,0,0,0.85));
+  z-index: 10;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .25s ease;
+}
+#overlay.show { opacity: 1; pointer-events: auto; }
+#overlay .panel {
+  width: min(520px, 92vw);
+  background: rgba(8,10,24,0.85);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 16px;
+  padding: 24px;
+  text-align: center;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+}
+#hud .stat strong#themeName { color: #80d8ff; }
+
+.overlay.hidden { display: none; }
+#endOverlay {
+  position: fixed; inset: 0; display: grid; place-items: center;
+  background: radial-gradient(ellipse at center, rgba(0,0,0,0.55), rgba(0,0,0,0.85));
+  z-index: 12;
+}
+#endOverlay.hidden { display: none; }
+#endOverlay .panel { width: min(460px, 92vw); background: rgba(8,10,24,0.9); border: 1px solid rgba(255,255,255,0.1); border-radius: 16px; padding: 20px; text-align: center; color: #fff; }
+#endOverlay h2 { margin: 0 0 6px; }
+#endOverlay button { margin-top: 10px; background: linear-gradient(135deg, #00d4ff, #007cff); color:#00121f; border-radius: 12px; border: none; padding: 10px 18px; font-weight: 700; cursor: pointer; }
+#overlay h1 { margin: 0 0 8px; font-size: 28px; }
+#overlay p { margin: 6px 0; opacity: 0.9; }
+#overlay .tip { font-size: 12px; opacity: 0.7; }
+#overlay button {
+  margin-top: 8px;
+  background: linear-gradient(135deg, #00d4ff, #007cff);
+  color: #00121f;
+  border: none;
+  border-radius: 12px;
+  padding: 10px 18px;
+  font-weight: 700;
+  cursor: pointer;
+}
+#overlay button:hover { filter: brightness(1.05); }
+
+#mobileHint {
+  position: fixed;
+  bottom: 12px; left: 50%; transform: translateX(-50%);
+  background: rgba(0,0,0,0.35);
+  border: 1px solid rgba(255,255,255,0.12);
+  padding: 6px 10px;
+  border-radius: 12px;
+  font-size: 12px;
+  z-index: 4;
+  opacity: 0.75;
+}
+@media (pointer:fine) { #mobileHint { display:none; } }
+
+/* 开场倒计时 */
+#countdown {
+  position: fixed;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  z-index: 11;
+  pointer-events: none;
+  color: #e6f7ff;
+  font-weight: 900;
+  text-shadow: 0 4px 24px rgba(0, 200, 255, 0.6);
+}
+#countdown.hidden { display: none; }
+#countdown span {
+  font-size: clamp(60px, 16vw, 180px);
+  -webkit-text-stroke: 2px rgba(0,0,0,0.4);
+  animation: pop .6s ease;
+}
+@keyframes pop {
+  0% { transform: scale(0.6); opacity: 0; }
+  60% { transform: scale(1.05); opacity: 1; }
+  100% { transform: scale(1.0); opacity: 1; }
+}
